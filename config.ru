@@ -82,19 +82,24 @@ class MyStreamApp
 
   def call(env)
     @env = env
-    @params = {}
+
+    if env['REQUEST_PATH'] == '/index.html'
+      return [200, {'Content-Type' => 'text/html'}, [File.read('index.html')]]
+    elsif env['REQUEST_PATH'] == '/favicon.ico'
+      return [400, {}, []]
+    end
+
     stream do |out|
-      out << "It's gonna be legen -\n"
+      out << "data: jebosve\n\n"
       sleep 3
-      out << " (wait for it) \n"
+      out << "data: jebosve\n\n"
       sleep 3
-      out << "- dary!\n"
+      out << "data: jebosve\n\n"
     end
   end
 
   def stream(keep_open = false)
     scheduler = env['async.callback'] ? EventMachine : Stream
-    current   = @params.dup
     [200, {'Content-Type' => 'text/event-stream'}, Stream.new(scheduler, keep_open) { |out| yield(out) }]
   end
 end

@@ -1,0 +1,16 @@
+<script>
+
+var source = new EventSource("http://localhost:9292");
+source.onopen = function(){
+  alert("OPENED");
+}
+
+source.onmessage = function(event) {
+  alert(event.data);
+};
+
+source.onerror = function(){
+  console.log("ERROR")
+}
+
+</script>
