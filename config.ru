@@ -85,9 +85,9 @@ class MyStreamApp
     @params = {}
     stream do |out|
       out << "It's gonna be legen -\n"
-      sleep 0.5
+      sleep 3
       out << " (wait for it) \n"
-      sleep 1
+      sleep 3
       out << "- dary!\n"
     end
   end
@@ -95,16 +95,8 @@ class MyStreamApp
   def stream(keep_open = false)
     scheduler = env['async.callback'] ? EventMachine : Stream
     current   = @params.dup
-    [200, {'Content-Type' => 'text/event-stream'}, Stream.new(scheduler, keep_open) { |out| with_params(current) { yield(out) }}]
+    [200, {'Content-Type' => 'text/event-stream'}, Stream.new(scheduler, keep_open) { |out| yield(out) }]
   end
-
-  def with_params(temp_params)
-    original, @params = @params, temp_params
-    yield
-  ensure
-    @params = original if original
-  end
-
 end
 
 use ExtendedRack
